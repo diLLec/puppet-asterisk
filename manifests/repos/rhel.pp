@@ -1,6 +1,6 @@
 # Installs the repos needed to install asterisk and it's components
 #
-class asterisk::repos {
+class asterisk::repos::rhel {
 
 
   if $asterisk::real_manage_package['manage_repos'] == 'all' or $asterisk::real_manage_package['manage_repos'] == 'only-asterisk'

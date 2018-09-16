@@ -218,7 +218,19 @@ class asterisk (
   # mess everything up. You can read about this at:
   # http://docs.puppetlabs.com/puppet/2.7/reference/lang_containment.html#known-issues
   anchor { 'asterisk::begin': }
-  -> class { '::asterisk::repos': }
+  -> 
+  case $::operatingsystem {
+    'CentOS', 'Fedora', 'Scientific', 'RedHat', 'Amazon', 'OracleLinux': {
+        # rhel-based
+        class { '::asterisk::repos::rhel': }
+    }
+    'Debian', 'Ubuntu': {
+        class { '::asterisk::repos::debian': }
+    }
+    default: {
+      fail("\"${module_name}\" provides no packages for \"${::operatingsystem}\"")
+    }
+  }
   -> class { '::asterisk::install': }
   -> class { '::asterisk::config': }
   ~> class { '::asterisk::service': }

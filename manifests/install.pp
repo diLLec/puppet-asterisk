@@ -3,36 +3,29 @@ class asterisk::install {
 
   # TODO: make packages dependend on loaded modules
   if $asterisk::real_manage_package['manage_package'] {
-    ensure_packages([
-      $asterisk::real_manage_package['package_name'],
-      "${asterisk::real_manage_package['package_name']}-dahdi",
-      "${asterisk::real_manage_package['package_name']}-devel",
-      "${asterisk::real_manage_package['package_name']}-sounds-core-en-alaw.noarch",
-      "${asterisk::real_manage_package['package_name']}-mysql",
-      "${asterisk::real_manage_package['package_name']}-iax2",
-      "${asterisk::real_manage_package['package_name']}-sip",
-      "${asterisk::real_manage_package['package_name']}-snmp"],
-      {
-        'provider' => 'yum',
-        'ensure'   => 'present',
-        'require'  => [
-          Yumrepo['asterisk-common'],
-          Yumrepo['asterisk-13']
-        ]
+    $rhel_packages = ['dahdi', 'devel', 'sounds-core-en-alaw.noarch', 'asterisk-sounds-core-en', 'asterisk-sounds-core-en-gsm', 'mysql', 'iax2', 'sip', 'snmp']
+    $debian_packages = ['dahdi', 'dev', 'core-sounds-en', 'mysql']
+    case $::operatingsystem {
+      'CentOS', 'Fedora', 'Scientific', 'RedHat', 'Amazon', 'OracleLinux': {
+        $rhel_packages.each |String $package| {
+          package { "${asterisk::real_manage_package['package_name']}-${package}":
+            ensure      => 'present',
+            require     => [
+              Yumrepo['asterisk-common'],
+              Yumrepo['asterisk-13']
+            ]
+          }
+        }
       }
-    )
-
-    ensure_packages([
-      $asterisk::real_manage_package['package_name'],
-      'asterisk-sounds-core-en',
-      'asterisk-sounds-core-en-gsm',
-    ],
-    {
-      ensure => installed
+      'Debian', 'Ubuntu': {
+        $debian_packages.each |String $package| {
+          package { "${asterisk::real_manage_package['package_name']}-${package}":
+            ensure      => 'present',
+          }
+        }
+      }
     }
-    )
   }
-
   if $asterisk::real_manage_package['manage_directories'] {
     if has_key($asterisk::real_asterisk_options['directories'], 'astetcdir') and $asterisk::real_asterisk_options['directories']['astetcdir'] != $asterisk::confdir {
       notify { "The defined 'astetcdir' is different from where this module will generate the configruation in. Please adjust.":

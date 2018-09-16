@@ -407,7 +407,7 @@ Features
 --------
 
 Features let you configure call parking and special numbers that trigger
-special functionality. The `asterisk::feature` defined type helps you
+special functionality. The `asterisk::cfg::feature` defined type helps you
 configuring such features. The `options` parameter is mandatory.
 
 Define features that are contained within feature group "myfeaturegroup":
@@ -417,18 +417,18 @@ $ft_options = {
   'pausemonitor'   => '#1,self/callee,Pausemonitor',
   'unpauseMonitor' => '#3,self/callee,UnPauseMonitor',
 }
-asterisk::feature { 'myfeaturegroup':
+asterisk::cfg::feature { 'myfeaturegroup':
   options => $ft_options,
 }
 ```
 
 A special section in the features configuration file, namely
 `[applicationmaps]` lets you define global features. The
-`asterisk::feature::applicationmap` defined type helps you configure such a
+`asterisk::cfg::feature::applicationmap` defined type helps you configure such a
 global feature. The `feature` and `value` parameters are mandatory:
 
 ```puppet
-asterisk::feature::applicationmap { 'pausemonitor':
+asterisk::cfg::feature::applicationmap { 'pausemonitor':
   feature => 'pausemonitor',
   value   => '#1,self/callee,Pausemonitor',
 }
@@ -456,11 +456,11 @@ in this context.
 
 Another special context, `applicationmap`, lets you configure dynamic features.
 To set entries in this context, you should use the
-`asterisk::feature::applicationmap` defined type. Note also that for dynamic
+`asterisk::cfg::feature::applicationmap` defined type. Note also that for dynamic
 features to work the DYNAMIC_FEATURES channel variable must be set by listing
 features enabled in the channel, separated by '#'.
 
-To configure additional feature contexts, you can use the `asterisk::feature`
+To configure additional feature contexts, you can use the `asterisk::cfg::feature`
 defined type.
 
 Queues

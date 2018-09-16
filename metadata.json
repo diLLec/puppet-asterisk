@@ -18,6 +18,12 @@
         "6",
         "7"
       ]
+    },
+    { "operatingsystem": "Debian",
+      "operatingsystemrelease": [
+        "8",
+        "9"
+      ]
     }
   ],
   "tags": [
@@ -33,4 +39,3 @@
     }
   ]
 }
-
